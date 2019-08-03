@@ -2,17 +2,24 @@
 
 """
 
-Place your measurement file:
+Make measurements in Google Doc
+File > Download as > Comma-separated values (.csv)
+
+Place your measurement file here:
     parama_roundup/import/measurements.csv
 
 In terminal:
-    
 $ cd /path/to/my/repository/sources/
 $ python3 /path/to/parama_roundup/buildSpreadsheet.py
 
-The Output will go in:
+The output will go in:
     parama_roundup/export/axes.csv
     parama_roundup/export/sources.csv
+    
+Return to google doc
+File > Import (one CSV at a time)
+"Create New Sheet"
+    
 """
 
 import os
@@ -192,8 +199,12 @@ with open(measurementsPath, encoding="utf8") as measurementsFile:
                 normalizedValue = None
                 if value is not None:
                     normalizedValue = value/f.info.unitsPerEm * 1000        
-                    value = int(round(value))
-                    normalizedValue = int(round(normalizedValue, 2))
+                    value = round(value, 1)
+                    if value == int(value):
+                        value = int(value)
+                    normalizedValue = round(normalizedValue, 1)
+                    if normalizedValue == int(normalizedValue):
+                        normalizedValue = int(normalizedValue)
                 
                 # write
                 row.append(value)
