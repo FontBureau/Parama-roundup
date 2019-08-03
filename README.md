@@ -1,6 +1,9 @@
 # Parama-roundup
 
-
+### Resource Summary
+link to example var repo: 
+link to example designspace file:
+link to example output sheet:
 
 ### Specification
 
