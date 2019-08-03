@@ -24,7 +24,10 @@ File > Import (one CSV at a time)
 
 import os
 from fontTools.designspaceLib import *
-from fontParts.world import OpenFont
+try:
+    test = OpenFont
+except:
+    from fontParts.world import OpenFont
 import csv
 
 # if we can get vanilla, select the folder that contains the designspaces
