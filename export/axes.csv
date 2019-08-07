@@ -1,10 +1,7 @@
-Tag,Designspace,Label,Default,Min,Max
-wght,Amstelvar-Italic-002.designspace,weight,400.0,100.0,900.0
-opsz,Amstelvar-Italic-002.designspace,opsize,14.0,8.0,144.0
-wdth,Amstelvar-Italic-002.designspace,width,100.0,25.0,140.0
-wght,Amstelvar-Roman-008.designspace,weight,400.0,100.0,900.0
-opsz,Amstelvar-Roman-008.designspace,opsize,14.0,8.0,144.0
-wdth,Amstelvar-Roman-008.designspace,width,100.0,50.0,125.0
-XTRA,Amstelvar-Roman-008.designspace,XTRA,980.0,444.0,1104.0
-XOPQ,Amstelvar-Roman-008.designspace,XOPQ,176.0,36.0,526.0
-YOPQ,Amstelvar-Roman-008.designspace,YOPQ,124.0,29.0,224.0
+Tag,Label,Default,Min,Max
+wght,weight,400.0,100.0,900.0
+opsz,opsize,14.0,8.0,144.0
+wdth,width,100.0,50.0,125.0
+XTRA,XTRA,980.0,444.0,1104.0
+XOPQ,XOPQ,176.0,36.0,526.0
+YOPQ,YOPQ,124.0,29.0,224.0
