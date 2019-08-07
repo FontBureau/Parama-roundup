@@ -20,5 +20,5 @@ A target google sheet name accepts a list of values for each ufo and instance in
 
 What can be used from there, currently consists of QA, writing true values for parametric axes to JavaScript, and for use by web programs.
 
-Exporting, sheet to Designspace file, will be useful an specified, if roundup is contracted for.
+Exporting, sheet to Designspace file, will be useful and specified, if roundup is comepleted.
 
