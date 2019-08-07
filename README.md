@@ -1,9 +1,9 @@
 # Parama-roundup
 
 ### Resource Summary
-link to example var repo: 
-link to example designspace file:
-link to example output sheet:
+* [Example var repo](https://github.com/typenetwork/amstelvar/)
+* [Example designspace file](https://github.com/TypeNetwork/Amstelvar/blob/master/sources/Amstelvar-NewCharset/Amstelvar-Roman-009.designspace)
+* [Example output sheet](https://docs.google.com/spreadsheets/d/1r0oqR3ic8qQJycGgmZW-kqKEzgoPIIiKxt4MhOJFu7U)
 
 ### Specification
 
