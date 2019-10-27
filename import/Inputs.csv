@@ -1,20 +1,37 @@
-Measurement,Axis,Direction,Reference glyph 1,Point index 1,Reference glyph 2,Point index 2
-XTRA1,XTRA,x,H,10,H,23
-YTRA1,YTRA,y,H,6,p,0
-XOPQ1,XOPQ,x,H,3,H,10
-YOPQ1,YOPQ,y,H,16,H,19
-YTLC1,YTLC,y,x,0,x,17
-YTUC1,YTUC,y,H,0,H,6
-YTFG1,YTFG,y,1,0,7,1
-YTAS1,YTAS,y,h,0,h,6
-YTDE1,YTDE,y,p,0,p,39
-YTAD1,YTAD,y,ˆ,0,ˆ,7
-YTDD1,YTDD,y,,,,
-YOAW1,YOAW,y,˙,9,˙,3
-XOAW1,XOAW,x,˙,0,˙,6
-XTAB1,XTAB,x,,,,
-YTSE1,YTSE,y,H,1,H,2
-VOTF1,VOTF,y,,,,
-PWTH1,PWTH,x,H,10,H,23
-PWHT1,PWHT,x,H,3,H,10
-UDLN1,UDLN,y,_,2,,
+,,,Direction,glyph,index1,glyph,index2
+XOPQ,XOPQ,General x opaque,x,48,0,48,11
+XOUC,XOUC,Y stem uppercase,x,48,0,48,11
+XOLC,XOLC,y stem lowercase,x,66,19,66,18
+XOFI,XOFI,y stem figures,x,,,,
+XTRA,XTRA,General x transparent,x,48,11,48,8
+XTUC,XTUC,x trans uppercase,x,48,11,48,8
+XTLC,XTLC,x trans lowercase,x,6E,0,6E,12
+XTFI,XTFI,x trans figures,x,30,0,30,20
+XTAB,XTAB,Figure width,x,30,28,30,29
+GRAD,GRAD,Grade,x,48,11,48,8
+XTSB,XTSB,General x sidebearing,x,,,,
+XUCS,XUCS,x sidebearing uppercase H,x,48,0,48,12
+XUCR,XUCR,x sidebearing uppercase O,x,4F,0,4F,28
+XLCS,XLCS,x sidebearing lowercase n,x,6E,0,6E,21
+XLCR,XLCR,x sidebearing lowercase o,x,6F,0,6F,28
+XFIR,XFIR,x sidebearing figure 0,x,30,0,30,28
+YOPQ,YOPQ,General y opaque,y,48,10,48,3
+YOUC,YOUC,x opaque uppercase,y,48,10,48,3
+YOLC,YOLC,x opaque lowercase,y,6E,0,6E,20
+YOFI,YOFI,x opaque figures,y,31,0,31,6
+YTAS,YTAS,y transparent ascender ,y,68,1,,
+YTDE,YTDE,y transparent descender,y,70,0,,
+YTOS,YTOS,General y overshoot,y,4F,11,,
+YTUO,YTUO,y uppercase overshoot,y,4F,11,,
+YTLO,YTLO,y lowercase overshoot,y,6F,11,,
+YTDO,YTDO,y descender overshoot,y,6A,13,,
+YTAO,YTAO,y ascender overshoot,y,66,4,,
+YTFO,YTFO,y figures overshoot,y,30,11,,
+YTRA,YTRA,y transparent,y,68,1,70,0
+YTUC,YTUC,y transparent uppercase,y,48,1,,
+YTLC,YTLC,y transparent lowercase,y,78,8,,
+YTFI,YTFI,y transparent figures,y,35,17,,
+PWGT,PWGT,Para Weight,x,48,11,48,8
+PWDT,PWDT,Para Width,x,48,11,48,8
+POPS,POPS,Para Optical Size,x,,,,
+UDLN,UDLN,underline,y,5F,1,,

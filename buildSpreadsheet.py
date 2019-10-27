@@ -87,9 +87,22 @@ def getValueFromGlyphIndex(g, index):
             if i == index:
                 return (p.x, p.y)
             i += 1
+    
+    """If the entire set of contours for a glyph requires “n” points (i.e., contour points numbered from 0 to n-1), then the scaler will add points n, n+1, n+2, and n+3. Point “n” will be placed at the character origin, point “n+1” will be placed at the advance width point, point “n+2” will be placed at the top origin, and point “n+3” will be placed at the advance height point. For an illustration of how these phantom points are placed, see Figure 2-1 (points 17, 18, 19, 20) and Figure 2-2 (points 27, 28, 29, and 30).
+    https://docs.microsoft.com/en-us/typography/opentype/spec/tt_instructing_glyphs#phantoms"""
+    
+    if index == i:
+        return (0, 0)
+    elif index == i+1:
+        return (g.width, 0)
+    elif index == i+2:
+        return (0, g.getParent().info.ascender)
+    elif index == i+3:
+        return (g.width, g.getParent().info.ascender)
+        
 
 # define the spreadsheet structure
-measurementsCols = ['Measurement', 'Axis', 'Direction', 'Reference glyph 1', 'Point index 1', 'Reference glyph 2', 'Point index 2', ]
+measurementsCols = ['Measurement', 'Axis', 'Description', 'Direction', 'Reference glyph 1', 'Point index 1', 'Reference glyph 2', 'Point index 2', ]
 axesCols = ['Tag', 'Label', 'Default', 'Min', 'Max']
 sourcesCols = ['Source', 'UPM']
 
@@ -133,6 +146,9 @@ with open(measurementsPath, encoding="utf8") as measurementsFile:
     for source in doc.sources:
         #if 'Amstelvar-Roman.ufo' not in source.path:
         #    continue
+        if not os.path.exists(source.path):
+            print('missing source', source.path)
+            continue
         f = OpenFont(source.path, showInterface=False)
         charMap = f.getCharacterMapping()
         
@@ -161,11 +177,17 @@ with open(measurementsPath, encoding="utf8") as measurementsFile:
                 # if the reference field is one character long, use the glyph with that character's unicode
                 # if not, assume that it’s the glyph name
                 gname = None
-                if len(char) > 1:
-                    gname = char
-                elif char and ord(char) in charMap:
+                if char and len(char) == 1 and ord(char) in charMap:
                     gname = charMap[ord(char)][0]
-                
+                elif char != '':
+                        hexchar = int(char, 16)
+                        if hexchar in charMap:
+                            gname = charMap[hexchar][0]
+                        else:
+                            print('Could not find glyph for char', char)
+                            continue
+                else:
+                    char = gname
                 if gname and gname in f and pointIndex:
                     g = f[gname]
                     value = getValueFromGlyphIndex(g, pointIndex)
