@@ -47,6 +47,7 @@ base = os.path.split(__file__)[0]
 measurementsPath = os.path.join ( base, 'import/Inputs.csv' )
 axesPath = os.path.join(base, 'export/Axes.csv')
 sourcesPath = os.path.join(base, 'export/Measurements.csv')
+widthsPath = os.path.join(base, 'export/Widths.csv')
 
 # not using these functions yet, but I might
 def excel_column_name(n):
@@ -110,6 +111,9 @@ measurementNames = []
 axesRows = []
 sourcesRows = []
 
+widthsRows = []
+widthsCols= ['']
+
 # parse axis information from designspace file
 doc = DesignSpaceDocument()
 doc.read(designspacePath)
@@ -129,6 +133,7 @@ with open(measurementsPath, encoding="utf8") as measurementsFile:
     measurementsReader = csv.reader(measurementsFile)
     measurements = {}
     
+    
     # define the measurements and save them as a dictionary of their properties
     for rowIndex, row in enumerate(measurementsReader):
         if rowIndex >= 1:
@@ -143,9 +148,17 @@ with open(measurementsPath, encoding="utf8") as measurementsFile:
     doc.read(designspacePath)
     designspaceFileName = os.path.split(designspacePath)[1]
     # loop through sources within the designspace
+    
     for source in doc.sources:
-        #if 'Amstelvar-Roman.ufo' not in source.path:
-        #    continue
+        if source.copyInfo:
+            f = OpenFont(source.path, showInterface=False)
+            for gname in f.glyphOrder:
+                if gname in f:
+                    widthsCols.append(gname)
+            f.close()
+    widthsRows.append(widthsCols)
+    
+    for source in doc.sources:
         if not os.path.exists(source.path):
             print('missing source', source.path)
             continue
@@ -215,6 +228,16 @@ with open(measurementsPath, encoding="utf8") as measurementsFile:
             row.append(normalizedValue)
                 
         sourcesRows.append(row)
+        
+        widthsRow = [os.path.split(source.path)[1]]
+        for gname in widthsCols[1:]:
+            if gname in f:
+                widthsRow.append(f[gname].width)
+            else:
+                widthsRow.append('')
+        
+        widthsRows.append(widthsRow)
+        
         f.close()
 
 # write sources.csv
@@ -230,5 +253,15 @@ with open(sourcesPath, 'w', encoding="utf8") as sourcesFile:
     csvw.writerow(headers)
     for row in sourcesRows:
         csvw.writerow(row)
+        
+
+# write widths.csv
+with open(widthsPath, 'w', encoding="utf8") as widthsFile:
+    csvw = csv.writer(widthsFile)
+    
+    # add headers for upm and normalized values
+    for row in widthsRows:
+        csvw.writerow(row)
+
 
 print('done')
