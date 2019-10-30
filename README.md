@@ -34,7 +34,8 @@ Exporting, sheet to Designspace file, will be useful and specified, if roundup i
 ```
 $ cd /path/to/my/repository/sources/
 $ python3 /path/to/parama_roundup/buildSpreadsheet.py MyDesignspace.designspace
-``` (where MyDesignspace.designspace is your designspace filename)
+``` 
+(where MyDesignspace.designspace is your designspace filename)
 
 
 3. The output will go in:
