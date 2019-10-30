@@ -22,3 +22,22 @@ What can be used from there, currently consists of QA, writing true values for p
 
 Exporting, sheet to Designspace file, will be useful and specified, if roundup is comepleted.
 
+### Instructions
+
+1. Download inputs sheet and save it as `import/Inputs.csv` (make sure empty lines and spaces are removed)
+
+2. Run `buildSpreadsheet.py`
+
+    * in RoboFont, select designspace when prompted
+    
+    * On the command line 
+    ```$ cd /path/to/my/repository/sources/
+$ python3 /path/to/parama_roundup/buildSpreadsheet.py MyDesignspace.designspace
+(where MyDesignspace.designspace is your designspace filename)```
+
+3. The output will go in:
+    * `/export/Axes.csv`
+    * `/export/Measurements.csv`
+    * `/export/Widths.csv`
+    
+4. Return to Google Sheet and select `File > Import` and `Create New Sheet` for each CSV you want to add
