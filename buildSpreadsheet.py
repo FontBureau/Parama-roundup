@@ -47,6 +47,7 @@ base = os.path.split(__file__)[0]
 measurementsPath = os.path.join ( base, 'import/Inputs.csv' )
 axesPath = os.path.join(base, 'export/Axes.csv')
 sourcesPath = os.path.join(base, 'export/Measurements.csv')
+widthsPath = os.path.join(base, 'export/Widths.csv')
 
 # not using these functions yet, but I might
 def excel_column_name(n):
@@ -87,15 +88,31 @@ def getValueFromGlyphIndex(g, index):
             if i == index:
                 return (p.x, p.y)
             i += 1
+    
+    """If the entire set of contours for a glyph requires “n” points (i.e., contour points numbered from 0 to n-1), then the scaler will add points n, n+1, n+2, and n+3. Point “n” will be placed at the character origin, point “n+1” will be placed at the advance width point, point “n+2” will be placed at the top origin, and point “n+3” will be placed at the advance height point. For an illustration of how these phantom points are placed, see Figure 2-1 (points 17, 18, 19, 20) and Figure 2-2 (points 27, 28, 29, and 30).
+    https://docs.microsoft.com/en-us/typography/opentype/spec/tt_instructing_glyphs#phantoms"""
+    
+    if index == i:
+        return (0, 0)
+    elif index == i+1:
+        return (g.width, 0)
+    elif index == i+2:
+        return (0, g.getParent().info.ascender)
+    elif index == i+3:
+        return (g.width, g.getParent().info.ascender)
+        
 
 # define the spreadsheet structure
-measurementsCols = ['Measurement', 'Axis', 'Direction', 'Reference glyph 1', 'Point index 1', 'Reference glyph 2', 'Point index 2', ]
+measurementsCols = ['Measurement', 'Axis', 'Description', 'Direction', 'Reference glyph 1', 'Point index 1', 'Reference glyph 2', 'Point index 2', ]
 axesCols = ['Tag', 'Label', 'Default', 'Min', 'Max']
 sourcesCols = ['Source', 'UPM']
 
 measurementNames = []
 axesRows = []
 sourcesRows = []
+
+widthsRows = []
+widthsCols= ['']
 
 # parse axis information from designspace file
 doc = DesignSpaceDocument()
@@ -116,6 +133,7 @@ with open(measurementsPath, encoding="utf8") as measurementsFile:
     measurementsReader = csv.reader(measurementsFile)
     measurements = {}
     
+    
     # define the measurements and save them as a dictionary of their properties
     for rowIndex, row in enumerate(measurementsReader):
         if rowIndex >= 1:
@@ -130,9 +148,20 @@ with open(measurementsPath, encoding="utf8") as measurementsFile:
     doc.read(designspacePath)
     designspaceFileName = os.path.split(designspacePath)[1]
     # loop through sources within the designspace
+    
     for source in doc.sources:
-        #if 'Amstelvar-Roman.ufo' not in source.path:
-        #    continue
+        if source.copyInfo:
+            f = OpenFont(source.path, showInterface=False)
+            for gname in f.glyphOrder:
+                if gname in f:
+                    widthsCols.append(gname)
+            f.close()
+    widthsRows.append(widthsCols)
+    
+    for source in doc.sources:
+        if not os.path.exists(source.path):
+            print('missing source', source.path)
+            continue
         f = OpenFont(source.path, showInterface=False)
         charMap = f.getCharacterMapping()
         
@@ -161,11 +190,17 @@ with open(measurementsPath, encoding="utf8") as measurementsFile:
                 # if the reference field is one character long, use the glyph with that character's unicode
                 # if not, assume that it’s the glyph name
                 gname = None
-                if len(char) > 1:
-                    gname = char
-                elif char and ord(char) in charMap:
+                if char and len(char) == 1 and ord(char) in charMap:
                     gname = charMap[ord(char)][0]
-                
+                elif char != '':
+                        hexchar = int(char, 16)
+                        if hexchar in charMap:
+                            gname = charMap[hexchar][0]
+                        else:
+                            print('Could not find glyph for char', char)
+                            continue
+                else:
+                    char = gname
                 if gname and gname in f and pointIndex:
                     g = f[gname]
                     value = getValueFromGlyphIndex(g, pointIndex)
@@ -193,6 +228,16 @@ with open(measurementsPath, encoding="utf8") as measurementsFile:
             row.append(normalizedValue)
                 
         sourcesRows.append(row)
+        
+        widthsRow = [os.path.split(source.path)[1]]
+        for gname in widthsCols[1:]:
+            if gname in f:
+                widthsRow.append(f[gname].width)
+            else:
+                widthsRow.append('')
+        
+        widthsRows.append(widthsRow)
+        
         f.close()
 
 # write sources.csv
@@ -208,5 +253,15 @@ with open(sourcesPath, 'w', encoding="utf8") as sourcesFile:
     csvw.writerow(headers)
     for row in sourcesRows:
         csvw.writerow(row)
+        
+
+# write widths.csv
+with open(widthsPath, 'w', encoding="utf8") as widthsFile:
+    csvw = csv.writer(widthsFile)
+    
+    # add headers for upm and normalized values
+    for row in widthsRows:
+        csvw.writerow(row)
+
 
 print('done')
