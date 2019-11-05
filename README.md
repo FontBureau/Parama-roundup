@@ -30,7 +30,7 @@ Exporting, sheet to Designspace file, will be useful and specified, if roundup i
 
 3. Get a CSV for inputs by going to `File > Download > Comma Separated Values` (CSV) and save it to `import/Inputs.csv`
 
-2. Run `buildSpreadsheet.py`either in RoboFont or in Terminal
+4. Run `buildSpreadsheet.py`either in RoboFont or in Terminal
 
     * In RoboFont, select the designspace when prompted
     
@@ -42,9 +42,9 @@ $ python3 /path/to/parama_roundup/buildSpreadsheet.py MyDesignspace.designspace
 (where MyDesignspace.designspace is your designspace filename)
 
 
-3. The output will go in:
+5. The output will go in:
     * `/export/Axes.csv`
     * `/export/Measurements.csv`
     * `/export/Widths.csv`
     
-4. Return to Google Sheet and select `File > Import` and `Create New Sheet` for each CSV you want to add
+6. Return to Google Sheet and select `File > Import` and `Create New Sheet` for each CSV you want to add
