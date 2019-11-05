@@ -24,13 +24,17 @@ Exporting, sheet to Designspace file, will be useful and specified, if roundup i
 
 ### Instructions
 
-1. Download inputs sheet and save it as `import/Inputs.csv` (make sure empty lines and spaces are removed)
+1. Start with a google sheet like https://docs.google.com/spreadsheets/d/1OS9wOXAB6zeoXy7tf7m8Du4zzMmAQYLCJktehCSZ-T8/edit#gid=0
 
-2. Run `buildSpreadsheet.py`
+2. Remove empty rows if they exist
 
-    * in RoboFont, select designspace when prompted
+3. Get a CSV for inputs by going to `File > Download > Comma Separated Values` (CSV) and save it to `import/Inputs.csv`
+
+2. Run `buildSpreadsheet.py`either in RoboFont or in Terminal
+
+    * In RoboFont, select the designspace when prompted
     
-    * On the command line 
+    * In Terminal, provide designspace as argument
 ```
 $ cd /path/to/my/repository/sources/
 $ python3 /path/to/parama_roundup/buildSpreadsheet.py MyDesignspace.designspace
