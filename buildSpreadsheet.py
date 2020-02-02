@@ -1,21 +1,4 @@
 #coding=utf-8
-"""
-
-In terminal:
-$ cd /path/to/my/repository/sources/
-$ python3 /path/to/parama_roundup/buildSpreadsheet.py MyDesignspace.designspace
-(where MyDesignspace.designspace is your designspace filename)
-
-
-The output will go in:
-    parama_roundup/export/Axes.csv
-    parama_roundup/export/Measurements.csv
-    
-Return to google doc
-File > Import (one CSV at a time)
-"Create New Sheet"
-    
-"""
 import sys
 import os
 from fontTools.designspaceLib import *
@@ -28,11 +11,8 @@ import pickle
 import tempfile
 import shutil
 
-
-
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-
 
 basePath = os.path.split(__file__)[0]
 
@@ -159,14 +139,65 @@ def createSheet(SPREADSHEET_ID, title):
     return(sheet_id)
     
 
+# not using these functions yet, but I might
+def excel_column_name(n):
+    """Number to Excel-style column name, e.g., 1 = A, 26 = Z, 27 = AA, 703 = AAA."""
+    name = ''
+    while n > 0:
+        n, r = divmod (n - 1, 26)
+        name = chr(r + ord('A')) + name
+    return name
+
+def excel_column_number(name):
+    """Excel-style column name to number, e.g., A = 1, Z = 26, AA = 27, AAA = 703."""
+    n = 0
+    for c in name:
+        n = n * 26 + 1 + ord(c) - ord('A')
+    return n
+
+# how we round numbers for the spreadsheet
+def doRounding(value):
+    rounded = round(value, 1)
+    if rounded == int(rounded):
+        return int(rounded)
+    if rounded % 2:
+        return int(math.ceil(rounded))
+    else:
+        return int(math.floor(rounded))
+    
+
+# get point indexes from glyph
+def getValueFromGlyphIndex(g, index):
+    """
+    Given a glyph and a point index, return that point.
+    """
+    index = int(index)
+    i = 0
+    for c in g:
+        for p in c.points:
+            if i == index:
+                return (p.x, p.y)
+            i += 1
+
+    """If the entire set of contours for a glyph requires “n” points (i.e., contour points numbered from 0 to n-1), then the scaler will add points n, n+1, n+2, and n+3. Point “n” will be placed at the character origin, point “n+1” will be placed at the advance width point, point “n+2” will be placed at the top origin, and point “n+3” will be placed at the advance height point. For an illustration of how these phantom points are placed, see Figure 2-1 (points 17, 18, 19, 20) and Figure 2-2 (points 27, 28, 29, and 30).
+    https://docs.microsoft.com/en-us/typography/opentype/spec/tt_instructing_glyphs#phantoms"""
+
+    if index == i:
+        return (0, 0)
+    elif index == i+1:
+        return (g.width, 0)
+    elif index == i+2:
+        return (0, g.getParent().info.ascender)
+    elif index == i+3:
+        return (g.width, g.getParent().info.ascender)
+
+
 
 if __name__ == "__main__":
 
     writeAxes = True
     writeMeasurements = True
     writeWidths = True
-
-
 
     # if we are not in robofont, use fontparts to parse UFO
     try:
@@ -196,65 +227,12 @@ if __name__ == "__main__":
     print('inputSpreadsheetID', inputSpreadsheetID)
     print('outputSpreadsheetID', outputSpreadsheetID)
 
-
     # write stuff locally as well
     tempBasePath = tempfile.mkdtemp()
     axesPath = os.path.join(tempBasePath, 'axes.csv')
     measurementsPath = os.path.join(tempBasePath, 'measurements.csv')
     widthsPath = os.path.join(tempBasePath, 'widths.csv')
 
-    # not using these functions yet, but I might
-    def excel_column_name(n):
-        """Number to Excel-style column name, e.g., 1 = A, 26 = Z, 27 = AA, 703 = AAA."""
-        name = ''
-        while n > 0:
-            n, r = divmod (n - 1, 26)
-            name = chr(r + ord('A')) + name
-        return name
-
-    def excel_column_number(name):
-        """Excel-style column name to number, e.g., A = 1, Z = 26, AA = 27, AAA = 703."""
-        n = 0
-        for c in name:
-            n = n * 26 + 1 + ord(c) - ord('A')
-        return n
-
-    # how we round numbers for the spreadsheet
-    def doRounding(value):
-        rounded = round(value, 1)
-        if rounded == int(rounded):
-            return int(rounded)
-        if rounded % 2:
-            return int(math.ceil(rounded))
-        else:
-            return int(math.floor(rounded))
-        
-
-    # get point indexes from glyph
-    def getValueFromGlyphIndex(g, index):
-        """
-        Given a glyph and a point index, return that point.
-        """
-        index = int(index)
-        i = 0
-        for c in g:
-            for p in c.points:
-                if i == index:
-                    return (p.x, p.y)
-                i += 1
-    
-        """If the entire set of contours for a glyph requires “n” points (i.e., contour points numbered from 0 to n-1), then the scaler will add points n, n+1, n+2, and n+3. Point “n” will be placed at the character origin, point “n+1” will be placed at the advance width point, point “n+2” will be placed at the top origin, and point “n+3” will be placed at the advance height point. For an illustration of how these phantom points are placed, see Figure 2-1 (points 17, 18, 19, 20) and Figure 2-2 (points 27, 28, 29, and 30).
-        https://docs.microsoft.com/en-us/typography/opentype/spec/tt_instructing_glyphs#phantoms"""
-    
-        if index == i:
-            return (0, 0)
-        elif index == i+1:
-            return (g.width, 0)
-        elif index == i+2:
-            return (0, g.getParent().info.ascender)
-        elif index == i+3:
-            return (g.width, g.getParent().info.ascender)
-        
 
     # define the spreadsheet structure
     measurementsCols = ['Axis', 'Description', 'Direction', 'Note', 'Reference glyph 1', 'Point index 1', 'Reference glyph 2', 'Point index 2', 'Formula']
@@ -280,6 +258,8 @@ if __name__ == "__main__":
 
     if writeMeasurements or writeWidths:
 
+        # get the measurements from the "Index Refs" sheet in the input spreadsheet
+        # and collect them in a dictionary
         measurementInputs = getInputData(inputSpreadsheetID)
         measurements = {}
         for rowIndex, row in enumerate(measurementInputs):
@@ -294,12 +274,12 @@ if __name__ == "__main__":
                     measurementNames.append(row[0])
                     measurements[row[0]] = mDict
 
-        # loop through designspaces
+        # loop through designspace
         doc = DesignSpaceDocument()
         doc.read(designspacePath)
         designspaceFileName = os.path.split(designspacePath)[1]
-        # loop through sources within the designspace
 
+        # gather glyph index for width counting
         for source in doc.sources:
             if source.copyInfo:
                 f = OpenFont(source.path, showInterface=False)
@@ -309,6 +289,7 @@ if __name__ == "__main__":
                 f.close()
         widthsRows.append(widthsCols)
 
+        # process each source
         for source in doc.sources:
             if not os.path.exists(source.path):
                 print('missing source', source.path)
@@ -329,7 +310,8 @@ if __name__ == "__main__":
                     directionIndex = 0
                 elif direction == 'y':
                     directionIndex = 1
-            
+                
+                # interpret the reference glyph and point indexes and obtain the measurement
                 chars = [ 
                     ( mDict['Reference glyph 1'], mDict['Point index 1'] ), 
                     ( mDict['Reference glyph 2'], mDict['Point index 2'] ) 
@@ -374,13 +356,13 @@ if __name__ == "__main__":
                     value = doRounding(value)
                     normalizedValue = doRounding(normalizedValue)
         
-                # write
-                
+                # write (UPM value and then permille)
                 row.append(value)
                 row.append(normalizedValue)
             
             sourcesRows.append(row)
-    
+            
+            # process the widths
             widthsRow = [os.path.split(source.path)[1]]
             for gname in widthsCols[1:]:
                 if gname in f:
@@ -392,48 +374,38 @@ if __name__ == "__main__":
     
             f.close()
 
-
+    # write stuff to local CSVs and to the output spreadsheet
     if writeAxes:
-        # write to axes.csv
         with open(os.path.join(os.path.split(designspacePath)[0], axesPath), 'w', encoding="utf8") as axisFile:
             csvw = csv.writer(axisFile)
             csvw.writerow(axesCols)
             for row in axesRows:
                 csvw.writerow(row)
-
-        #results = createSheet(outputSpreadsheetID, 'Testing')
         writeOutputData([axesCols]+axesRows, outputSpreadsheetID, 'Axes')
-
-
 
     if writeMeasurements:
         with open(measurementsPath, 'w', encoding="utf8") as sourcesFile:
             csvw = csv.writer(sourcesFile)
-    
             # add headers for upm and normalized values
             headers = sourcesCols
             for measurementName in measurementNames:
                 headers.append(measurementName)
                 headers.append(measurementName + ' ‰')
-            
-            rows = []
             csvw.writerow(headers)
+            rows = []
             for row in sourcesRows:
                 csvw.writerow(row)
                 rows.append(row)
-        
         writeOutputData([headers]+rows, outputSpreadsheetID, 'Measurements')
 
-        
     if writeWidths:
-        # write widths.csv
         with open(os.path.join(os.path.split(designspacePath)[0], widthsPath), 'w', encoding="utf8") as widthsFile:
             csvw = csv.writer(widthsFile)
             for row in widthsRows:
                 csvw.writerow(row)
-
             writeOutputData(widthsRows, outputSpreadsheetID, 'Widths')
 
+    # get rid of the temp CSV folder
     shutil.rmtree(tempBasePath)
     print('done')
     
