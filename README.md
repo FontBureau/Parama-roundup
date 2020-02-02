@@ -2,8 +2,8 @@
 
 ### Resource Summary
 * [Example var repo](https://github.com/typenetwork/amstelvar/)
-* [Example designspace file](https://github.com/TypeNetwork/Amstelvar/blob/master/sources/Amstelvar-NewCharset/Amstelvar-Roman-009.designspace)
-* [Example output sheet](https://docs.google.com/spreadsheets/d/1r0oqR3ic8qQJycGgmZW-kqKEzgoPIIiKxt4MhOJFu7U)
+* [Example designspace file](https://github.com/TypeNetwork/Amstelvar/blob/master/sources/Amstelvar-NewCharset/Amstelvar-Roman-010.designspace)
+* [Example input sheet](https://docs.google.com/spreadsheets/d/1L1Cy2Y1JFOl32nuevTkzcxjNsSTlLGn_oiRLkMnyonY)
 
 ### Specification
 
@@ -24,23 +24,30 @@ Exporting, sheet to Designspace file, will be useful and specified, if roundup i
 
 ### Instructions
 
-1. Download inputs sheet and save it as `import/Inputs.csv` (make sure empty lines and spaces are removed)
+1. Run `quickstart.py` on the command line, following instructions to log in to your Google account. [Visit the APIv4 website for further instructions.](https://developers.google.com/sheets/api/quickstart/python))
 
-2. Run `buildSpreadsheet.py`
+```$ python quickstart.py```
 
-    * in RoboFont, select designspace when prompted
-    
-    * On the command line 
-```
-$ cd /path/to/my/repository/sources/
-$ python3 /path/to/parama_roundup/buildSpreadsheet.py MyDesignspace.designspace
-``` 
-(where MyDesignspace.designspace is your designspace filename)
+You only have to do this the first time to set up your tokens.
 
+2. Create a Google spreadsheet with a sheet called `Index Refs` modeled on the [example sheet](https://docs.google.com/spreadsheets/d/1L1Cy2Y1JFOl32nuevTkzcxjNsSTlLGn_oiRLkMnyonY)
 
-3. The output will go in:
-    * `/export/Axes.csv`
-    * `/export/Measurements.csv`
-    * `/export/Widths.csv`
-    
-4. Return to Google Sheet and select `File > Import` and `Create New Sheet` for each CSV you want to add
+3. Click on “Share” in the upper right, and set spreadsheet permissions to “Anyone with the link can edit”
+
+![Sharing settings](assets/sharing.png)
+
+4. Record the Google Sheet ID for the sheet, which is the long sequence of letters and numbers found in the URL:
+
+<pre>https://docs.google.com/spreadsheets/d/<strong><span style="color: red">1L1Cy2Y1JFOl32nuevTkzcxjNsSTlLGn_oiRLkMnyonY</span></strong>/edit?usp=sharing</pre>
+
+5. Run `buildSpreadsheet.py` on the command line 
+<pre>$ cd /path/to/my/repository/sources/
+$ python3 /path/to/parama_roundup/buildSpreadsheet.py -d <strong>MyDesignspace.designspace</strong> -i <strong>INPUT_GOOGLE_SHEET_ID</strong> -o <strong>INPUT_GOOGLE_SHEET_ID</strong></pre>
+
+| Arg | Description                                                           |
+|----|------------------------------------------------------------------------|
+| -d | Designspace filename                                                   |
+| -i | Spreadsheet ID for Input sheet (must contain “Index Refs” sheet        |
+| -o | Spreadsheet ID for Output sheet (if omitted, input sheet will be used) |
+
+6. Check the output spreadsheet for `Axes`, `Measurements`, and `Widths` sheets with the resulting data
