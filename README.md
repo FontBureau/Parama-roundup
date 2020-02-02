@@ -26,7 +26,8 @@ Exporting, sheet to Designspace file, will be useful and specified, if roundup i
 
 1. Run `quickstart.py` on the command line, following instructions to log in to your Google account. [Visit the APIv4 website for further instructions.](https://developers.google.com/sheets/api/quickstart/python))
 
-```$ python quickstart.py```
+```$ cd path/to/Parama-roundup
+$ python quickstart.py```
 
 You only have to do this the first time to set up your tokens.
 
@@ -41,8 +42,8 @@ You only have to do this the first time to set up your tokens.
 <pre>https://docs.google.com/spreadsheets/d/<strong><span style="color: red">1L1Cy2Y1JFOl32nuevTkzcxjNsSTlLGn_oiRLkMnyonY</span></strong>/edit?usp=sharing</pre>
 
 5. Run `buildSpreadsheet.py` on the command line 
-<pre>$ cd /path/to/my/repository/sources/
-$ python3 /path/to/parama_roundup/buildSpreadsheet.py -d <strong>MyDesignspace.designspace</strong> -i <strong>INPUT_GOOGLE_SHEET_ID</strong> -o <strong>INPUT_GOOGLE_SHEET_ID</strong></pre>
+<pre>$ cd path/to/Parama-roundup
+$ python3 buildSpreadsheet.py -d <strong>/path/to/MyDesignspace.designspace</strong> -i <strong>INPUT_GOOGLE_SHEET_ID</strong> -o <strong>INPUT_GOOGLE_SHEET_ID</strong></pre>
 
 | Arg | Description                                                           |
 |----|------------------------------------------------------------------------|

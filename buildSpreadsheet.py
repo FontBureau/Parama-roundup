@@ -26,10 +26,15 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import pickle
 import tempfile
+import shutil
+
+
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
+
+basePath = os.path.split(__file__)[0]
 
 def getCreds():
     creds = None
@@ -41,7 +46,7 @@ def getCreds():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+                os.path.join(basePath, 'credentials.json'), SCOPES)
             creds = flow.run_local_server(port=0)
         with open('token.pickle', 'wb') as token:
             pickle.dump(creds, token)
@@ -193,19 +198,10 @@ if __name__ == "__main__":
 
 
     # write stuff locally as well
-    tempBasePath = '/users/david/desktop/temp5'
+    tempBasePath = tempfile.mkdtemp()
     axesPath = os.path.join(tempBasePath, 'axes.csv')
     measurementsPath = os.path.join(tempBasePath, 'measurements.csv')
     widthsPath = os.path.join(tempBasePath, 'widths.csv')
-
-
-    # if we can get vanilla, select the designspace
-    # if not, use the commandline argument
-    try:
-        from vanilla.dialogs import getFolder, getFile
-        designspacePath = getFile('Get designspace file')[0]
-    except:
-        pass
 
     # not using these functions yet, but I might
     def excel_column_name(n):
@@ -277,7 +273,10 @@ if __name__ == "__main__":
     doc.read(designspacePath)
     designspaceFileName = os.path.split(designspacePath)[1]
     for axis in doc.axes:
-        axesRows.append( [axis.tag, axis.labelNames['en'], axis.default, axis.minimum, axis.maximum] )
+        try:
+            axesRows.append( [axis.tag, axis.labelNames['en'], axis.default, axis.minimum, axis.maximum] )
+        except:
+            axesRows.append( [axis.tag, '', axis.default, axis.minimum, axis.maximum] )
 
     if writeMeasurements or writeWidths:
 
@@ -435,5 +434,6 @@ if __name__ == "__main__":
 
             writeOutputData(widthsRows, outputSpreadsheetID, 'Widths')
 
-
+    shutil.rmtree(tempBasePath)
     print('done')
+    
