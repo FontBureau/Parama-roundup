@@ -16,6 +16,15 @@ A source google sheet name and location will supply a design space file name and
 An axis with one index point value is to be measured in y from the index point to the origin. Positive and negative values should be returned.
 An axis with two index point values measures the x or y distance as indicated by the first character of the axis name.
 
+If you want to measure against the sidebearing or ascent/descent, phantom points are also accepted. These [are specified in the OpenType Spec](https://docs.microsoft.com/en-us/typography/opentype/spec/tt_instructing_glyphs#phantoms) and are defined as the following, given _n_ as the total number of points in the glyph:
+* n+1 = (origin, origin)
+* n+2 = (advance width, origin)
+* n+3 = (origin, ascender)
+* n+4 = (origin, descender)
+
+[![Phantom Points](https://docs.microsoft.com/en-us/typography/opentype/spec/images/ttinst_glyphs_02.png)](https://docs.microsoft.com/en-us/typography/opentype/spec/tt_instructing_glyphs#phantoms)
+
+
 A target google sheet name accepts a list of values for each ufo and instance in the design space, the values are written in columns with the style names to match the original axes list.
 
 What can be used from there, currently consists of QA, writing true values for parametric axes to JavaScript, and for use by web programs.
