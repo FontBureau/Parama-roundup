@@ -17,10 +17,10 @@ An axis with two index point values measures the x or y distance as indicated by
 
 If you want to measure against the sidebearing or ascent/descent, phantom points are also accepted. These [are specified in the OpenType Spec](https://docs.microsoft.com/en-us/typography/opentype/spec/tt_instructing_glyphs#phantoms) and are defined as the following, given _n_ as the total number of points in the glyph:
 
-* n+1 = (origin, origin)
-* n+2 = (advance width, origin)
-* n+3 = (origin, ascender)
-* n+4 = (origin, descender)
+* n = (origin, origin)
+* n+1 = (advance width, origin)
+* n+2 = (origin, ascender)
+* n+3 = (origin, descender)
 
 [![Phantom Points](https://docs.microsoft.com/en-us/typography/opentype/spec/images/ttinst_glyphs_02.png)](https://docs.microsoft.com/en-us/typography/opentype/spec/tt_instructing_glyphs#phantoms)
 
